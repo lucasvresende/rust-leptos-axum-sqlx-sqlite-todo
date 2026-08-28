@@ -1,0 +1,68 @@
+[package]
+name = "leptos-todo"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+leptos = "0.8.20"
+leptos_meta = "0.8"
+leptos_router = "0.8"
+serde = { version = "1", features = ["derive"] }
+server_fn = "0.8"
+
+console_error_panic_hook = { version = "0.1", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
+
+axum = { version = "0.8", optional = true }
+leptos_axum = { version = "0.8.10", optional = true }
+tokio = { version = "1", features = [
+  "macros",
+  "rt-multi-thread",
+  "net",
+], optional = true }
+sqlx = { version = "0.9.0", default-features = false, features = [
+  "runtime-tokio",
+  "sqlite",
+  "derive",
+  "migrate",
+  "macros",
+], optional = true }
+
+[features]
+default = []
+hydrate = ["leptos/hydrate", "dep:console_error_panic_hook", "dep:wasm-bindgen"]
+ssr = [
+  "dep:axum",
+  "dep:leptos_axum",
+  "dep:tokio",
+  "dep:sqlx",
+  "leptos/ssr",
+  "leptos_meta/ssr",
+  "leptos_router/ssr",
+]
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[package.metadata.leptos]
+output-name = "leptos-todo"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+assets-dir = "public"
+tailwind-input-file = "style/tailwind.css"
+site-addr = "127.0.0.1:3000"
+reload-port = 3001
+bin-features = ["ssr"]
+bin-default-features = false
+lib-features = ["hydrate"]
+lib-default-features = false
+lib-profile-release = "wasm-release"

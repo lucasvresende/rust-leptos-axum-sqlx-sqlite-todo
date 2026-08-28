@@ -1,0 +1,7 @@
+{
+  "rust-analyzer.cargo.features": [
+    "ssr",
+    "hydrate"
+  ],
+  "rust-analyzer.highlighting.strings": false
+}
