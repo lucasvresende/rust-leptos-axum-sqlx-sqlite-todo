@@ -5,6 +5,20 @@ edition = "2021"
 rust-version = "1.88"
 publish = false
 
+[package.metadata.leptos]
+output-name = "leptos-todo"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+assets-dir = "public"
+tailwind-input-file = "style/tailwind.css"
+site-addr = "127.0.0.1:3000"
+reload-port = 3001
+bin-features = ["ssr"]
+bin-default-features = false
+lib-features = ["hydrate"]
+lib-default-features = false
+lib-profile-release = "wasm-release"
+
 [lib]
 crate-type = ["cdylib", "rlib"]
 
@@ -20,49 +34,44 @@ wasm-bindgen = { version = "0.2", optional = true }
 
 axum = { version = "0.8", optional = true }
 leptos_axum = { version = "0.8.10", optional = true }
-tokio = { version = "1", features = [
-  "macros",
-  "rt-multi-thread",
-  "net",
-], optional = true }
-sqlx = { version = "0.9.0", default-features = false, features = [
-  "runtime-tokio",
-  "sqlite",
-  "derive",
-  "migrate",
-  "macros",
-], optional = true }
+sqlx = {
+  version = "0.9.0",
+  default-features = false,
+  features = [
+    "derive",
+    "macros",
+    "migrate",
+    "runtime-tokio",
+    "sqlite",
+  ],
+  optional = true
+}
+tokio = {
+  version = "1",
+  features = [
+    "macros",
+    "net",
+    "rt-multi-thread",
+  ],
+  optional = true
+}
 
 [features]
 default = []
-hydrate = ["leptos/hydrate", "dep:console_error_panic_hook", "dep:wasm-bindgen"]
+hydrate = ["dep:console_error_panic_hook", "dep:wasm-bindgen", "leptos/hydrate"]
 ssr = [
   "dep:axum",
   "dep:leptos_axum",
-  "dep:tokio",
   "dep:sqlx",
-  "leptos/ssr",
+  "dep:tokio",
   "leptos_meta/ssr",
   "leptos_router/ssr",
+  "leptos/ssr",
 ]
 
 [profile.wasm-release]
 inherits = "release"
 opt-level = "z"
 lto = true
-codegen-units = 1
 panic = "abort"
-
-[package.metadata.leptos]
-output-name = "leptos-todo"
-site-root = "target/site"
-site-pkg-dir = "pkg"
-assets-dir = "public"
-tailwind-input-file = "style/tailwind.css"
-site-addr = "127.0.0.1:3000"
-reload-port = 3001
-bin-features = ["ssr"]
-bin-default-features = false
-lib-features = ["hydrate"]
-lib-default-features = false
-lib-profile-release = "wasm-release"
+codegen-units = 1

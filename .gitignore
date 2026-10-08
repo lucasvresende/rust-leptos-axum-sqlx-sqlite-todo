@@ -4,3 +4,6 @@
 /*.db-shm
 /*.db-wal
 .DS_Store
+
+# Local/generated files are preserved separately during storage cleanup.
+/.vscode/settings.json
